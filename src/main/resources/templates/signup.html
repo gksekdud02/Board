@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f9f9f9;
+        }
+        .signup-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        input {
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px;
+            background-color: #4a67b0;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #2b7c67;
+        }
+        .nickname-container {
+            display: flex;
+            align-items: center;
+        }
+        .nickname-container input {
+            flex: 1;
+        }
+        .nickname-container button {
+            margin-left: 5px;
+            width: auto;
+        }
+        #nicknameMessage {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="signup-container">
+    <h2>회원가입</h2>
+    <form id="signupForm" action="/auth/register" method="post">
+        <!-- 닉네임 입력 필드와 중복 확인 버튼 -->
+        <div class="nickname-container">
+            <input type="text" name="nickname" id="nickname" placeholder="닉네임" required>
+            <button type="button" id="checkNicknameBtn">중복 확인</button>
+            <span id="nicknameMessage"></span>
+        </div>
+        <input type="text" name="username" placeholder="아이디" required>
+        <input type="password" name="password" placeholder="비밀번호" required>
+        <input type="password" name="confirmPassword" placeholder="비밀번호 확인" required>
+        <input type="text" name="email" placeholder="이메일" required>
+        <button type="submit">회원가입</button>
+    </form>
+    <p>이미 계정이 있으신가요? <a href="/login">로그인</a></p>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 폼 제출 전에 비밀번호 검증
+        const signupForm = document.getElementById('signupForm');
+        signupForm.addEventListener('submit', function(event) {
+            const password = document.querySelector('input[name="password"]').value;
+            const confirmPassword = document.querySelector('input[name="confirmPassword"]').value;
+            if (password !== confirmPassword) {
+                event.preventDefault(); // 폼 제출 취소
+                alert("비밀번호와 확인 비밀번호가 일치하지 않습니다.");
+            }
+        });
+
+        // 닉네임 중복 확인
+        const checkNicknameBtn = document.getElementById('checkNicknameBtn');
+        checkNicknameBtn.addEventListener('click', function() {
+            const nickname = document.getElementById('nickname').value.trim();
+            const messageSpan = document.getElementById('nicknameMessage');
+            if (nickname === '') {
+                alert('닉네임을 입력해주세요.');
+                return;
+            }
+            // AJAX를 통해 닉네임 중복 여부 확인
+            fetch(`/auth/checkNickname?nickname=${encodeURIComponent(nickname)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.available) {
+                        messageSpan.textContent = '사용 가능한 닉네임입니다.';
+                        messageSpan.style.color = 'green';
+                    } else {
+                        messageSpan.textContent = '이미 사용 중인 닉네임입니다.';
+                        messageSpan.style.color = 'red';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+    });
+</script>
+</body>
+</html>
