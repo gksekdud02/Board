@@ -4,13 +4,11 @@ import com.example.Board.entity.Board;
 import com.example.Board.entity.User;
 import com.example.Board.repository.BoardRepository;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -64,6 +62,33 @@ public class BoardController {
 
         boardRepository.save(board);
 
+        return "redirect:/board/";
+    }
+
+    @GetMapping("/{id}") // 게시판 글을 상세보기
+    @Transactional
+    public String boardDetail(@PathVariable("id") Long id, Model model) {
+        // 조회수 증가
+        boardRepository.incrementViewCount(id);
+
+        // 업데이트된 게시글 정보를 가져옴
+        Board board = boardRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
+
+        model.addAttribute("board", board);
+        return "boarddetail";
+    }
+
+    @PostMapping("/{id}/delete")
+    public String deleteBoard(@PathVariable("id") Long id, HttpSession session) {
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        Board board = boardRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
+
+        // 작성자가 맞는지 확인
+        if (loggedInUser != null && loggedInUser.getId().equals(board.getUser().getId())) {
+            boardRepository.delete(board);
+        }
         return "redirect:/board/";
     }
 

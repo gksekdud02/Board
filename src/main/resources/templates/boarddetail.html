@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 상세보기</title>
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+          margin: 0;
+          padding: 0;
+          background-color: #f9f9f9;
+        }
+        header {
+          background-color: #4a67b0;
+          color: #fff;
+          padding: 20px;
+          text-align: center;
+        }
+        .content {
+          max-width: 800px;
+          margin: 20px auto;
+          background: #fff;
+          padding: 20px;
+          border-radius: 5px;
+          box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .post-details {
+          margin-bottom: 30px;
+        }
+        .post-details h2 {
+          margin-top: 0;
+        }
+        .post-info {
+          font-size: 14px;
+          color: #777;
+          margin-bottom: 15px;
+        }
+        .post-content {
+          line-height: 1.6;
+          margin-bottom: 40px;
+        }
+        .comments {
+          margin-top: 40px;
+        }
+        .comments h3 {
+          border-bottom: 1px solid #ddd;
+          padding-bottom: 5px;
+        }
+        .comment {
+          border-bottom: 1px solid #eee;
+          padding: 10px 0;
+        }
+        .comment:last-child {
+          border-bottom: none;
+        }
+        .comment .comment-writer {
+          font-weight: bold;
+        }
+        .comment .comment-date {
+          font-size: 12px;
+          color: #999;
+        }
+        .comment-form {
+          margin-top: 30px;
+        }
+        .comment-form textarea {
+          width: 100%;
+          padding: 10px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          box-sizing: border-box;
+          resize: vertical;
+        }
+        .comment-form button {
+          background-color: #4a67b0;
+          color: white;
+          padding: 10px 15px;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          margin-top: 10px;
+        }
+        .comment-form button:hover {
+          background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>게시글 상세보기</h1>
+</header>
+
+<div class="content">
+    <!-- 삭제 버튼: 로그인되어 있고, 현재 사용자가 게시글 작성자인 경우에만 표시 -->
+    <div class="delete-button" th:if="${session.loggedInUser != null && session.loggedInUser.id == board.user.id}">
+        <form th:action="@{/board/{id}/delete(id=${board.id})}" method="post">
+            <button type="submit" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
+        </form>
+    </div>
+
+<div class="content">
+    <!-- 게시글 상세 정보 -->
+    <div class="post-details">
+        <h2 th:text="${board.title}">게시글 제목</h2>
+        <div class="post-info">
+            작성자: <span th:text="${board.writer}">작성자</span> |
+            작성일: <span th:text="${board.createdDate}">작성일</span> |
+            조회수: <span th:text="${board.view}">조회수</span>
+        </div>
+        <div class="post-content" th:text="${board.content}">
+            게시글 내용
+        </div>
+    </div>
+
+    <!-- 댓글 목록 -->
+    <div class="comments">
+        <h3>댓글</h3>
+        <div th:if="${#lists.isEmpty(comments)}">
+            <p>등록된 댓글이 없습니다.</p>
+        </div>
+        <div th:each="comment : ${comments}">
+            <div class="comment">
+                <div class="comment-writer" th:text="${comment.user.nickname}">댓글 작성자</div>
+                <div class="comment-date" th:text="${comment.createdDate}">댓글 작성일</div>
+                <div class="comment-content" th:text="${comment.comment}">댓글 내용</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 댓글 작성 폼 -->
+    <div class="comment-form">
+        <h3>댓글 작성</h3>
+        <form th:action="@{/board/{id}/comment(id=${board.id})}" method="post">
+            <textarea name="comment" rows="4" placeholder="댓글을 입력하세요." required></textarea>
+            <button type="submit">댓글 등록</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>
