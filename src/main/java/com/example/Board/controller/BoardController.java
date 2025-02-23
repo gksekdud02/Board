@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -92,4 +93,26 @@ public class BoardController {
         return "redirect:/board/";
     }
 
+    // 게시글 검색
+    @GetMapping("/search")
+    public String search(@RequestParam("searchType") String searchType,
+                         @RequestParam("query") String query,
+                         Model model,
+                         HttpSession session) {
+        List<Board> posts = new ArrayList<>();
+        if ("title".equalsIgnoreCase(searchType)) {
+            posts = boardRepository.findByTitleContainingIgnoreCase(query);
+        } else if ("writer".equalsIgnoreCase(searchType)) {
+            posts = boardRepository.findByWriterContainingIgnoreCase(query);
+        }
+        model.addAttribute("posts", posts);
+        model.addAttribute("searchType", searchType);
+        model.addAttribute("query", query);
+
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        if (loggedInUser != null) {
+            model.addAttribute("welcomeMessage", loggedInUser.getNickname() + "님 환영합니다!");
+        }
+        return "boardlist";
+    }
 }

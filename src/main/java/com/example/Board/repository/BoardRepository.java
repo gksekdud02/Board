@@ -9,11 +9,14 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface BoardRepository extends JpaRepository<Board, Long> {
-    // 모든 게시글을 생성일 내림차순으로 조회
+     // 모든 게시글을 생성일 내림차순으로 조회
     List<Board> findAllByOrderByCreatedDateDesc();
 
     // 제목에 특정 키워드가 포함된 게시글을 검색 (대소문자 구분 없이)
-    List<Board> findByTitleContainingIgnoreCase(String keyword);
+    List<Board> findByTitleContainingIgnoreCase(String title);
+
+    // 작성자(Writer)에 특정 키워드가 포함된 게시글을 검색 (대소문자 구분 없이)
+    List<Board> findByWriterContainingIgnoreCase(String writer);
 
     // 특정 사용자가 작성한 게시글 조회 (User 엔티티와 연관된 user의 id로 조회)
     List<Board> findAllByUser_Id(Long userId);

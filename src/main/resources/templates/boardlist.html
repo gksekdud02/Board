@@ -5,157 +5,249 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Board Service</title>
     <style>
+        /* 기본 스타일 */
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f9f9f9;
+          font-family: Arial, sans-serif;
+          margin: 0;
+          padding: 0;
+          background-color: #f9f9f9;
         }
-        header {
-            background-color: #4a67b0;
-            color: #ffffff;
-            padding: 20px;
-            text-align: center;
-            position: relative;
+
+        /* 제목 컨테이너 */
+        .title-container {
+          background-color: #4a67b0;
+          color: #ffffff;
+          padding: 20px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-wrap: wrap;
+          position: relative;
         }
-        /* 왼쪽 상단 환영 메시지 스타일 */
-        .welcome-message {
-            position: absolute;
-            top: 10px;
-            left: 20px;
-            font-size: 16px;
-            color: #fff;
+
+        .title-container h1 {
+          margin: 0;
+          font-size: 32px;
+          text-align: center;
+          flex: 1;
         }
-        header h1 {
-            margin: 0;
-            font-size: 32px;
-        }
+
+        /* 검색바 */
         .search-bar {
-            position: absolute;
-            top: 30px;
-            right: 20px;
-            display: flex;
-            align-items: center;
+          display: flex;
+          align-items: center;
+          gap: 5px;
+          position: absolute;
+          right: 20px;
+        }
+        .search-bar select,
+        .search-bar input,
+        .search-bar button {
+          height: 40px;
+          padding: 0 10px;
+          font-size: 16px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          outline: none;
         }
         .search-bar input {
-            padding: 5px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            outline: none;
+          width: 250px;
         }
         .search-bar button {
-            background-color: #3AA387;
-            border: none;
-            padding: 5px 10px;
-            color: white;
-            cursor: pointer;
-            border-radius: 4px;
-            margin-left: 5px;
+          background-color: #3AA387;
+          border: none;
+          color: #fff;
+          cursor: pointer;
         }
+        .search-bar button:hover {
+          background-color: #2b9070;
+        }
+
+        /* 게시글 목록 컨테이너 */
+        .container {
+          width: 90%;
+          max-width: 1200px;
+          margin: 20px auto;
+        }
+
+        /* 버튼 그룹 */
         .buttons {
-            display: flex;
-            justify-content: flex-end;
-            padding: 10px 20px;
-            gap: 10px;
+          display: flex;
+          justify-content: flex-end;
+          padding: 10px 20px;
+          gap: 10px;
         }
         .buttons button {
-            background-color: #efefef;
-            border: 1px solid #ccc;
-            color: #333;
-            padding: 8px 12px;
-            border-radius: 4px;
-            cursor: pointer;
+          background-color: #efefef;
+          border: 1px solid #ccc;
+          color: #333;
+          padding: 8px 12px;
+          border-radius: 4px;
+          cursor: pointer;
+        }
+
+        /* 테이블 스타일 */
+        .table-wrapper {
+          overflow-x: auto;
         }
         table {
-            width: 90%;
-            margin: 20px auto;
-            border-collapse: collapse;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+          width: 100%;
+          margin: 20px auto;
+          border-collapse: collapse;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         table thead th {
-            background-color: #444;
-            color: #fff;
-            padding: 10px;
-            border: 1px solid #ccc;
+          background-color: #444;
+          color: #fff;
+          padding: 10px;
+          border: 1px solid #ccc;
         }
         table tbody td {
-            padding: 10px;
-            text-align: center;
-            border: 1px solid #ccc;
+          padding: 10px;
+          text-align: center;
+          border: 1px solid #ccc;
         }
         table tbody tr:nth-child(even) {
-            background-color: #f2f2f2;
+          background-color: #f2f2f2;
         }
         table tbody tr:hover {
-            background-color: #ddd;
+          background-color: #ddd;
         }
+
+        /* 글쓰기 버튼 컨테이너 */
         .write-btn-container {
-            text-align: right;
-            margin: 20px 10%;
+          text-align: right;
+          margin: 20px 5%;
         }
         .write-btn {
-            background-color: #4a67b0;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+          background-color: #4a67b0;
+          color: white;
+          padding: 10px 15px;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
         }
         .write-btn:hover {
-            background-color: #0056b3;
+          background-color: #0056b3;
+        }
+
+        /* 반응형 미디어 쿼리 */
+        @media screen and (max-width: 768px) {
+          .title-container {
+            flex-direction: column;
+            text-align: center;
+            padding: 20px 10px;
+          }
+          .search-bar {
+            position: static;
+            margin-top: 10px;
+            width: 100%;
+            justify-content: center;
+          }
+          .search-bar input {
+            width: 100%;
+          }
+          .buttons {
+            flex-direction: column;
+            align-items: center;
+          }
+          .buttons button {
+            width: 90%;
+            margin-bottom: 10px;
+          }
+          .table-wrapper {
+            overflow-x: auto;
+          }
+          table thead th, table tbody td {
+            padding: 8px;
+            font-size: 14px;
+          }
+          .write-btn-container {
+            margin: 20px 5%;
+          }
         }
     </style>
 </head>
 <body>
-<header>
-    <!-- 왼쪽 상단 환영 메시지 (welcomeMessage가 있을 경우) -->
-    <div class="welcome-message" th:if="${welcomeMessage}" th:text="${welcomeMessage}">사용자님 환영합니다!</div>
-    <h1>게시판</h1>
-    <div class="search-bar">
-        <input type="text" placeholder="검색">
-        <button>검색</button>
-    </div>
-</header>
 
-<div class="buttons">
-    <!-- 로그인한 사용자가 있는 경우 로그아웃 버튼 표시 -->
+<!-- 제목 & 검색바 컨테이너 -->
+<div class="title-container">
+    <h1>게시판</h1>
+    <!-- 검색바 -->
+    <div class="search-bar">
+        <select id="searchType" name="searchType">
+            <option value="title">제목</option>
+            <option value="writer">작성자</option>
+        </select>
+        <input type="text" id="searchQuery" name="query" placeholder="검색">
+        <button type="button" onclick="performSearch()">검색</button>
+    </div>
+</div>
+
+<!-- 버튼 그룹 -->
+<div class="buttons container">
     <div th:if="${session.loggedInUser != null}">
         <button onclick="location.href='/auth/logout'">로그아웃</button>
+        <a th:href="@{/auth/info/{id}(id=${session.loggedInUser.id})}">
+            <button>내정보</button>
+        </a>
     </div>
-    <!-- 로그인한 사용자가 없으면 로그인과 회원가입 버튼 표시 -->
     <div th:if="${session.loggedInUser == null}">
         <button onclick="location.href='/auth/login'">로그인</button>
         <button onclick="location.href='/auth/signup'">회원가입</button>
     </div>
 </div>
 
-<table>
-    <thead>
-    <tr>
-        <th>번호</th>
-        <th>제목</th>
-        <th>작성자</th>
-        <th>작성일</th>
-        <th>조회수</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="post, iterStat : ${posts}">
-        <td th:text="${iterStat.index + 1}"></td>
-        <td>
-            <a th:href="@{/board/{id}(id=${post.id})}" th:text="${post.title}"></a>
-        </td>
-        <td th:text="${post.writer}"></td>
-        <td th:text="${post.createdDate}"></td>
-        <td th:text="${post.view}"></td>
-    </tr>
-    </tbody>
-</table>
-<form action="/board/writePage" method="get">
-    <div class="write-btn-container">
-        <button class="write-btn">글쓰기</button>
+<!-- 게시글 목록 컨테이너 -->
+<div class="container">
+    <div class="table-wrapper">
+        <table>
+            <thead>
+            <tr>
+                <th>번호</th>
+                <th>제목</th>
+                <th>작성자</th>
+                <th>작성일</th>
+                <th>조회수</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="post, iterStat : ${posts}">
+                <td th:text="${iterStat.index + 1}"></td>
+                <td>
+                    <a th:href="@{/board/{id}(id=${post.id})}" th:text="${post.title}"></a>
+                </td>
+                <td th:text="${post.writer}"></td>
+                <td th:text="${post.createdDate}"></td>
+                <td th:text="${post.view}"></td>
+            </tr>
+            </tbody>
+        </table>
     </div>
-</form>
+</div>
+
+<!-- 글쓰기 버튼 -->
+<div class="write-btn-container container">
+    <div th:if="${session.loggedInUser != null}">
+        <form action="/board/writePage" method="get">
+            <button class="write-btn" type="submit">글쓰기</button>
+        </form>
+    </div>
+    <div th:if="${session.loggedInUser == null}">
+        <button class="write-btn" type="button" onclick="alertAndRedirect()">글쓰기</button>
+    </div>
+</div>
+
+<script>
+    function performSearch() {
+        var searchType = document.getElementById('searchType').value;
+        var query = document.getElementById('searchQuery').value.trim();
+        if(query === '') {
+            alert("검색어를 입력해주세요.");
+            return;
+        }
+        window.location.href = '/board/search?searchType=' + encodeURIComponent(searchType) + '&query=' + encodeURIComponent(query);
+    }
+</script>
 </body>
 </html>

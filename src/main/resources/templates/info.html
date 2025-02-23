@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>내 정보</title>
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+          background-color: #f9f9f9;
+          margin: 0;
+          padding: 0;
+        }
+        header {
+          background-color: #4a67b0;
+          color: #fff;
+          padding: 20px;
+          text-align: center;
+        }
+        .container {
+          max-width: 800px;
+          margin: 20px auto;
+          background-color: #fff;
+          padding: 30px;
+          border-radius: 8px;
+          box-shadow: 0 0 10px rgba(0,0,0,0.1);
+          position: relative;
+        }
+        .back-button {
+          text-align: left;
+          margin-bottom: 20px;
+        }
+        .back-button button {
+          background-color: transparent;
+          border: none;
+          color: #4a67b0;
+          font-size: 14px;
+          cursor: pointer;
+        }
+        .back-button button:hover {
+          text-decoration: underline;
+        }
+        .section-title {
+          font-size: 24px;
+          margin-bottom: 15px;
+          color: #4a67b0;
+        }
+        .user-info p {
+          margin: 8px 0;
+          font-size: 16px;
+          color: #333;
+        }
+        .user-info h2 {
+          margin-top: 0;
+          color: #4a67b0;
+        }
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin: 20px 0;
+        }
+        table, th, td {
+          border: 1px solid #ccc;
+        }
+        th, td {
+          padding: 12px;
+          text-align: left;
+          font-size: 14px;
+        }
+        th {
+          background-color: #f2f2f2;
+        }
+        .action-buttons {
+          margin-top: 20px;
+        }
+        .action-buttons form {
+          display: inline-block;
+          margin-right: 10px;
+        }
+        .action-buttons button {
+          background-color: #4a67b0;
+          color: #fff;
+          border: none;
+          padding: 10px 15px;
+          border-radius: 4px;
+          cursor: pointer;
+          font-size: 14px;
+        }
+        .action-buttons button:hover {
+          background-color: #0056b3;
+        }
+        .action-buttons input[type="text"],
+        .action-buttons input[type="password"] {
+          padding: 8px;
+          margin-right: 5px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          font-size: 14px;
+        }
+        /* 회원 탈퇴 버튼 고정 */
+        .withdrawal-button {
+          position: fixed;
+          right: 20px;
+          bottom: 20px;
+          z-index: 1000;
+        }
+        .withdrawal-button button {
+          background-color: #d9534f;
+          color: #fff;
+          padding: 10px 15px;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          font-size: 14px;
+        }
+        .withdrawal-button button:hover {
+          background-color: #c9302c;
+        }
+        /* 반응형 디자인 */
+        @media screen and (max-width: 768px) {
+          .container {
+            margin: 10px;
+            padding: 20px;
+          }
+          .section-title {
+            font-size: 20px;
+          }
+          table, th, td {
+            font-size: 12px;
+            padding: 8px;
+          }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>내 정보</h1>
+</header>
+<div class="container">
+    <!-- 뒤로가기 버튼 -->
+    <div class="back-button">
+        <button type="button" onclick="window.history.back();">뒤로가기</button>
+    </div>
+
+    <!-- 사용자 정보 섹션 -->
+    <div class="user-info">
+        <h2 th:text="${user.nickname} + '님, 안녕하세요!'">사용자 닉네임</h2>
+        <p>아이디: <span th:text="${user.username}">username</span></p>
+        <p>이메일: <span th:text="${user.email}">email</span></p>
+        <p>가입일: <span th:text="${user.createdDate}">가입일</span></p>
+    </div>
+
+    <hr/>
+
+    <!-- 내 게시글 목록 -->
+    <h2 class="section-title">내 게시글</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>제목</th>
+            <th>작성일</th>
+            <th>조회수</th>
+            <th>상세보기</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="post, iterStat : ${posts}">
+            <td th:text="${iterStat.index + 1}">1</td>
+            <td th:text="${post.title}">게시글 제목</td>
+            <td th:text="${post.createdDate}">작성일</td>
+            <td th:text="${post.view}">조회수</td>
+            <td>
+                <a th:href="@{/board/{id}(id=${post.id})}">보기</a>
+            </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(posts)}">
+            <td colspan="5">등록된 게시글이 없습니다.</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <hr/>
+
+    <!-- 계정 관리 섹션 -->
+    <h2 class="section-title">계정 관리</h2>
+    <div class="action-buttons">
+        <form th:action="@{/auth/changeNickname}" method="post">
+            <input type="text" name="newNickname" placeholder="새 닉네임" required/>
+            <button type="submit">닉네임 변경</button>
+        </form>
+        <form th:action="@{/auth/changePassword}" method="post">
+            <input type="password" name="currentPassword" placeholder="현재 비밀번호" required/>
+            <input type="password" name="newPassword" placeholder="새 비밀번호" required/>
+            <button type="submit">비밀번호 변경</button>
+        </form>
+    </div>
+</div>
+
+<!-- 회원 탈퇴 버튼 -->
+<div class="withdrawal-button">
+    <form th:action="@{/auth/withdraw}" method="post">
+        <button type="submit" onclick="return confirm('정말 탈퇴하시겠습니까?');">회원 탈퇴</button>
+    </form>
+</div>
+</body>
+</html>

@@ -1,72 +1,128 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>글쓰기</title>
     <style>
-        /* 기본 스타일 설정 */
+        /* 기본 스타일 */
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f9f9f9;
-            color: #333;
+          font-family: Arial, sans-serif;
+          margin: 0;
+          padding: 0;
+          background-color: #f9f9f9;
         }
 
-        /* 제목 스타일 */
-        h1 {
-            text-align: center;
-            color: #4a67b0;
-            margin-bottom: 20px;
+        /* 제목 컨테이너 */
+        .title-container {
+          background-color: #4a67b0;
+          color: #ffffff;
+          padding: 20px;
+          text-align: center;
         }
 
-        /* 입력 필드 및 라벨 정렬 */
+        .title-container h1 {
+          margin: 0;
+          font-size: 28px;
+        }
+
+        /* 전체 폼 컨테이너 */
+        .container {
+          width: 90%;
+          max-width: 800px;
+          margin: 20px auto;
+          background-color: #fff;
+          padding: 30px;
+          border-radius: 8px;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 뒤로가기 버튼 */
+        .back-button {
+          margin-bottom: 20px;
+        }
+        .back-button button {
+          background-color: #4a67b0;
+          color: #fff;
+          border: none;
+          padding: 8px 12px;
+          border-radius: 4px;
+          cursor: pointer;
+        }
+        .back-button button:hover {
+          background-color: #0056b3;
+        }
+
+        /* 폼 요소 */
         .form-group {
-            margin-bottom: 15px;
-            margin-left: 100px;
-            margin-right: 100px;
+          margin-bottom: 20px;
         }
-
         label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
+          display: block;
+          margin-bottom: 8px;
+          font-weight: bold;
+          color: #333;
         }
-
-        input[type="text"], textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
+        input[type="text"],
         textarea {
-            resize: none;
+          width: 100%;
+          padding: 12px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          font-size: 14px;
+          box-sizing: border-box;
+        }
+        textarea {
+          resize: vertical;
+          min-height: 200px;
         }
 
         /* 버튼 컨테이너 */
         .btn-container {
-            text-align: right; /* 버튼을 오른쪽 정렬 */
-            margin-right: 100px; /* 폼과 동일한 오른쪽 여백 */
+          text-align: right;
         }
-
         .write-btn {
-            background-color: #4a67b0;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+          background-color: #4a67b0;
+          color: #fff;
+          border: none;
+          padding: 12px 20px;
+          border-radius: 4px;
+          font-size: 16px;
+          cursor: pointer;
+        }
+        .write-btn:hover {
+          background-color: #0056b3;
         }
 
-        .write-btn:hover {
-            background-color: #0056b3;
+        /* 반응형 미디어 쿼리 */
+        @media screen and (max-width: 768px) {
+          .title-container h1 {
+            font-size: 24px;
+          }
+          .container {
+            width: 95%;
+            padding: 20px;
+          }
+          .back-button {
+            text-align: center;
+          }
         }
     </style>
 </head>
 <body>
-<div class="container">
+
+<!-- 제목 컨테이너 -->
+<div class="title-container">
     <h1>글쓰기</h1>
+</div>
+
+<!-- 본문 컨테이너 -->
+<div class="container">
+    <!-- 뒤로가기 버튼 -->
+    <div class="back-button">
+        <button type="button" onclick="window.history.back();">뒤로가기</button>
+    </div>
+
     <form th:action="@{/board/write}" method="post">
         <div class="form-group">
             <label for="title">제목:</label>
@@ -74,13 +130,13 @@
         </div>
         <div class="form-group">
             <label for="content">내용:</label>
-            <textarea id="content" name="content" rows="10" placeholder="내용을 입력하세요." required></textarea>
+            <textarea id="content" name="content" placeholder="내용을 입력하세요." required></textarea>
         </div>
-        <!-- 버튼 컨테이너 -->
         <div class="btn-container">
             <button class="write-btn" type="submit">작성</button>
         </div>
     </form>
 </div>
+
 </body>
 </html>
