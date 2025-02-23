@@ -109,9 +109,3 @@ Board Service는 **Spring Boot**와 **Thymeleaf**, **Spring Data JPA**를 사용
 ## 📌 데이터베이스 ERD
 ![ERD Diagram](./images/ERD.png)
 
----
-
-## 📌 실행 방법
-### 1️⃣ 데이터베이스 설정
-```sql
-CREATE DATABASE board_db;
