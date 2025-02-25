@@ -120,6 +120,16 @@ Board Service는 **Spring Boot**와 **Thymeleaf**, **Spring Data JPA**를 사용
 
 ---
 
+### 🔹 Comments 관련
+| 메서드    | URL                                      | 설명              |
+|--------|------------------------------------------|-----------------|
+| `GET`  | `/comments/board/{boardId}`              | 특정 게시물 댓글 목록 조회 |
+| `POST` | `/comments/board/{boardId}/add`          | 댓글 작성 기능        |
+| `POST` | `/comments/{boardId}/{commentId}/delete` | 댓글 삭제 기능        |
+
+---
+
+
 ## 📌 데이터베이스 ERD
 ![ERD Diagram](./images/ERD.png)
 
