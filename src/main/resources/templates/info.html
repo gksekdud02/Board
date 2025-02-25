@@ -139,7 +139,7 @@
 <div class="container">
     <!-- 뒤로가기 버튼 -->
     <div class="back-button">
-        <button type="button" onclick="window.history.back();">뒤로가기</button>
+        <button type="button" onclick="location.href='/board'">뒤로가기</button>
     </div>
 
     <!-- 사용자 정보 섹션 -->
@@ -147,7 +147,6 @@
         <h2 th:text="${user.nickname} + '님, 안녕하세요!'">사용자 닉네임</h2>
         <p>아이디: <span th:text="${user.username}">username</span></p>
         <p>이메일: <span th:text="${user.email}">email</span></p>
-        <p>가입일: <span th:text="${user.createdDate}">가입일</span></p>
     </div>
 
     <hr/>

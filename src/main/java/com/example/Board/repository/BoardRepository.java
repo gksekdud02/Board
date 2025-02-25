@@ -1,6 +1,8 @@
 package com.example.Board.repository;
 
 import com.example.Board.entity.Board;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -20,6 +22,11 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     // 특정 사용자가 작성한 게시글 조회 (User 엔티티와 연관된 user의 id로 조회)
     List<Board> findAllByUser_Id(Long userId);
+
+    // 게시글을 생성일 기준으로 내림차순 정렬하여 페이징
+    Page<Board> findAllByOrderByCreatedDateDesc(Pageable pageable);
+    Page<Board> findByTitleContainingIgnoreCase(String title, Pageable pageable);
+    Page<Board> findByWriterContainingIgnoreCase(String writer, Pageable pageable);
 
     // 게시글의 조회수를 1 증가시키는 커스텀 쿼리 (서비스 계층에서 트랜잭션 관리 필요)
     @Modifying

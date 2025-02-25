@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 수정</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .btn-container {
+            text-align: right;
+        }
+        .btn-container button {
+            background-color: #4a67b0;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn-container button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>게시글 수정</h2>
+
+    <form th:action="@{/board/{id}/edit(id=${board.id})}" method="post">
+        <!-- PUT 요청을 가능하게 하는 hidden input -->
+        <input type="hidden" name="_method" value="PUT">
+
+        <div class="form-group">
+            <label for="title">제목:</label>
+            <input type="text" id="title" name="title" th:value="${board.title}" required>
+        </div>
+        <div class="form-group">
+            <label for="content">내용:</label>
+            <textarea id="content" name="content" rows="6" required>[[${board.content}]]</textarea>
+        </div>
+        <div class="btn-container">
+            <button type="submit">수정 완료</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

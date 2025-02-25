@@ -6,123 +6,132 @@
     <title>게시글 상세보기</title>
     <style>
         body {
-          font-family: Arial, sans-serif;
-          background-color: #f9f9f9;
-          margin: 0;
-          padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
         }
         header {
-          background-color: #4a67b0;
-          color: #fff;
-          padding: 20px;
-          text-align: center;
+            background-color: #4a67b0;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
         }
         .container {
-          max-width: 800px;
-          margin: 20px auto;
-          background-color: #fff;
-          padding: 20px;
-          border-radius: 5px;
-          box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
+        /* 뒤로가기 버튼 */
         .back-button {
-          margin-bottom: 20px;
-          text-align: left;
+            margin-bottom: 20px;
         }
         .back-button button {
-          background-color: #4a67b0;
-          color: #fff;
-          border: none;
-          padding: 8px 12px;
-          border-radius: 4px;
-          cursor: pointer;
+            background-color: #4a67b0;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
         }
         .back-button button:hover {
-          background-color: #0056b3;
+            background-color: #0056b3;
         }
-        .delete-button {
-          text-align: right;
-          margin-bottom: 20px;
+        /* 삭제 및 수정 버튼 컨테이너 */
+        .button-container {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .button-container button {
+            background-color: #4a67b0;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .button-container button:hover {
+            background-color: #0056b3;
         }
         .delete-button button {
-          background-color: #d9534f;
-          color: #fff;
-          border: none;
-          padding: 8px 12px;
-          border-radius: 4px;
-          cursor: pointer;
+            background-color: #d9534f;
         }
         .delete-button button:hover {
-          background-color: #c9302c;
+            background-color: #c9302c;
         }
         .post-details h2 {
-          margin-top: 0;
-          color: #4a67b0;
+            margin-top: 0;
+            color: #4a67b0;
         }
         .post-info {
-          font-size: 14px;
-          color: #777;
-          margin-bottom: 15px;
+            font-size: 14px;
+            color: #777;
+            margin-bottom: 15px;
         }
         .post-content {
-          line-height: 1.6;
-          margin-bottom: 40px;
+            line-height: 1.6;
+            margin-bottom: 40px;
         }
         .comments {
-          margin-top: 40px;
+            margin-top: 40px;
         }
         .comments h3 {
-          border-bottom: 1px solid #ddd;
-          padding-bottom: 5px;
-          margin-bottom: 15px;
-          color: #4a67b0;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+            color: #4a67b0;
         }
         .comment {
-          border-bottom: 1px solid #eee;
-          padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
         }
         .comment:last-child {
-          border-bottom: none;
+            border-bottom: none;
         }
         .comment .comment-writer {
-          font-weight: bold;
+            font-weight: bold;
         }
         .comment .comment-date {
-          font-size: 12px;
-          color: #999;
+            font-size: 12px;
+            color: #999;
         }
         .comment-form {
-          margin-top: 30px;
+            margin-top: 30px;
         }
         .comment-form textarea {
-          width: 100%;
-          padding: 10px;
-          border: 1px solid #ccc;
-          border-radius: 4px;
-          box-sizing: border-box;
-          resize: vertical;
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            resize: vertical;
         }
         .comment-form button {
-          background-color: #4a67b0;
-          color: #fff;
-          padding: 10px 15px;
-          border: none;
-          border-radius: 4px;
-          cursor: pointer;
-          margin-top: 10px;
+            background-color: #4a67b0;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
         }
         .comment-form button:hover {
-          background-color: #0056b3;
+            background-color: #0056b3;
         }
-        /* 반응형: 작은 화면에서 컨테이너 여백 조정 */
+        /* 반응형 */
         @media screen and (max-width: 768px) {
-          .container {
-            margin: 10px;
-            padding: 15px;
-          }
-          header h1 {
-            font-size: 24px;
-          }
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+            header h1 {
+                font-size: 24px;
+            }
         }
     </style>
 </head>
@@ -133,14 +142,17 @@
 <div class="container">
     <!-- 뒤로가기 버튼 -->
     <div class="back-button">
-        <button type="button" onclick="window.history.back();">뒤로가기</button>
+        <button type="button" onclick="location.href='/board'">뒤로가기</button>
     </div>
 
-    <!-- 삭제 버튼: 로그인되어 있고, 현재 사용자가 게시글 작성자인 경우에만 표시 -->
-    <div class="delete-button" th:if="${session.loggedInUser != null && session.loggedInUser.id == board.user.id}">
+    <!-- 삭제 및 수정 버튼 -->
+    <div class="button-container" th:if="${session.loggedInUser != null && session.loggedInUser.id == board.user.id}">
         <form th:action="@{/board/{id}/delete(id=${board.id})}" method="post">
-            <button type="submit" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
+            <button type="submit" class="delete-button" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
         </form>
+        <a th:href="@{/board/editPage/{id}(id=${board.id})}">
+            <button type="button">수정</button>
+        </a>
     </div>
 
     <!-- 게시글 상세 정보 -->
@@ -151,9 +163,7 @@
             작성일: <span th:text="${board.createdDate}">작성일</span> |
             조회수: <span th:text="${board.view}">조회수</span>
         </div>
-        <div class="post-content" th:text="${board.content}">
-            게시글 내용
-        </div>
+        <div class="post-content" th:text="${board.content}">게시글 내용</div>
     </div>
 
     <!-- 댓글 목록 -->
@@ -162,22 +172,32 @@
         <div th:if="${#lists.isEmpty(comments)}">
             <p>등록된 댓글이 없습니다.</p>
         </div>
-        <div th:each="comment : ${comments}">
-            <div class="comment">
-                <div class="comment-writer" th:text="${comment.user.nickname}">댓글 작성자</div>
-                <div class="comment-date" th:text="${comment.createdDate}">댓글 작성일</div>
-                <div class="comment-content" th:text="${comment.comment}">댓글 내용</div>
+        <div th:each="comment : ${comments}" class="comment">
+            <div class="comment-writer" th:text="${comment.user.nickname}">댓글 작성자</div>
+            <div class="comment-date" th:text="${comment.createdDate}">댓글 작성일</div>
+            <div class="comment-content" th:text="${comment.comment}">댓글 내용</div>
+
+            <!-- 댓글 삭제 버튼 -->
+            <div th:if="${session.loggedInUser != null && session.loggedInUser.id == comment.user.id}">
+                <form th:action="@{/comments/{boardId}/{commentId}/delete(boardId=${board.id}, commentId=${comment.id})}" method="post">
+                    <button type="submit" class="delete-button" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
+                </form>
             </div>
         </div>
     </div>
 
-    <!-- 댓글 작성 폼 -->
-    <div class="comment-form">
+    <!-- 댓글 작성 -->
+    <div class="comment-form" th:if="${session.loggedInUser != null}">
         <h3>댓글 작성</h3>
-        <form th:action="@{/board/{id}/comment(id=${board.id})}" method="post">
+        <form th:action="@{/comments/board/{boardId}/add(boardId=${board.id})}" method="post">
             <textarea name="comment" rows="4" placeholder="댓글을 입력하세요." required></textarea>
             <button type="submit">댓글 등록</button>
         </form>
+    </div>
+
+    <!-- 로그인하지 않은 경우 댓글 작성 제한 -->
+    <div class="comment-form" th:if="${session.loggedInUser == null}">
+        <p style="color: red; text-align: center;">로그인 후 댓글을 작성할 수 있습니다.</p>
     </div>
 </div>
 </body>

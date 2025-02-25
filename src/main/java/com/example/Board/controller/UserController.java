@@ -30,7 +30,7 @@ public class UserController {
     }
 
     @GetMapping("/login") // 로그인 페이지로 이동
-    public String loginPage() {
+    public String loginPage()  {
         return "login"; // login.html 반환
     }
 
@@ -48,7 +48,7 @@ public class UserController {
             return "redirect:/auth/signup?error=비밀번호가 일치하지 않습니다.";
         }
         userService.registerUser(username, password, nickname, email);
-        return "redirect:/board/";
+        return "redirect:/board";
     }
 
     @PostMapping("/signin")
@@ -68,7 +68,7 @@ public class UserController {
                 return "redirect:/auth/login?error=" + errorMessage;
             }
             session.setAttribute("loggedInUser", user);
-            return "redirect:/board/";
+            return "redirect:/board";
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             return "redirect:/auth/login?error=내부+오류";
@@ -78,7 +78,7 @@ public class UserController {
     @GetMapping("/logout") //로그아웃
     public String logout(HttpSession session) {
         session.invalidate(); // 세션 무효화
-        return "redirect:/board/"; // 로그아웃 후 메인페이지로 리다이렉트
+        return "redirect:/board"; // 로그아웃 후 메인페이지로 리다이렉트
     }
 
 
@@ -116,7 +116,7 @@ public class UserController {
         }
         userService.withdraw(user.getId());
         session.invalidate();
-        return "redirect:/board/"; // 탈퇴 후 메인 페이지로 이동
+        return "redirect:/board"; // 탈퇴 후 메인 페이지로 이동
     }
 
     // 닉네임 변경

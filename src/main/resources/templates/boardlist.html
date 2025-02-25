@@ -19,7 +19,7 @@
           color: #ffffff;
           padding: 20px;
           display: flex;
-          justify-content: center;
+          justify-content: space-between;
           align-items: center;
           flex-wrap: wrap;
           position: relative;
@@ -30,6 +30,13 @@
           font-size: 32px;
           text-align: center;
           flex: 1;
+        }
+
+        /* 왼쪽 상단 사용자 환영 메시지 */
+        .welcome-message {
+          position: absolute;
+          left: 20px;
+          font-size: 16px;
         }
 
         /* 검색바 */
@@ -114,10 +121,11 @@
           background-color: #ddd;
         }
 
-        /* 글쓰기 버튼 컨테이너 */
+        /* 글쓰기 버튼 */
         .write-btn-container {
-          text-align: right;
-          margin: 20px 5%;
+          display: flex;
+          justify-content: flex-end; /* 테이블 오른쪽 끝 정렬 */
+          margin-top: 10px;
         }
         .write-btn {
           background-color: #4a67b0;
@@ -131,12 +139,41 @@
           background-color: #0056b3;
         }
 
-        /* 반응형 미디어 쿼리 */
+        /* 페이징 스타일 */
+        .pagination {
+          display: flex;
+          justify-content: center;
+          margin-top: 20px;
+        }
+        .pagination ul {
+          list-style: none;
+          display: flex;
+          gap: 10px;
+          padding: 0;
+        }
+        .pagination ul li a {
+          padding: 8px 12px;
+          background: #4a67b0;
+          color: white;
+          text-decoration: none;
+          border-radius: 4px;
+        }
+        .pagination ul li a:hover,
+        .pagination ul li .active {
+          background-color: #0056b3;
+        }
+
+        /* 반응형 */
         @media screen and (max-width: 768px) {
           .title-container {
             flex-direction: column;
             text-align: center;
             padding: 20px 10px;
+          }
+          .welcome-message {
+            position: static;
+            text-align: center;
+            margin-bottom: 10px;
           }
           .search-bar {
             position: static;
@@ -147,24 +184,6 @@
           .search-bar input {
             width: 100%;
           }
-          .buttons {
-            flex-direction: column;
-            align-items: center;
-          }
-          .buttons button {
-            width: 90%;
-            margin-bottom: 10px;
-          }
-          .table-wrapper {
-            overflow-x: auto;
-          }
-          table thead th, table tbody td {
-            padding: 8px;
-            font-size: 14px;
-          }
-          .write-btn-container {
-            margin: 20px 5%;
-          }
         }
     </style>
 </head>
@@ -172,15 +191,23 @@
 
 <!-- 제목 & 검색바 컨테이너 -->
 <div class="title-container">
+    <div class="welcome-message" th:if="${session.loggedInUser != null}" th:text="${session.loggedInUser.nickname + '님 환영합니다!'}">
+        사용자님 환영합니다!
+    </div>
+
     <h1>게시판</h1>
-    <!-- 검색바 -->
+
     <div class="search-bar">
-        <select id="searchType" name="searchType">
-            <option value="title">제목</option>
-            <option value="writer">작성자</option>
-        </select>
-        <input type="text" id="searchQuery" name="query" placeholder="검색">
-        <button type="button" onclick="performSearch()">검색</button>
+        <form th:action="@{/board/search}" method="get">
+            <select id="searchType" name="searchType">
+                <option value="title" th:selected="${searchType == 'title'}">제목</option>
+                <option value="writer" th:selected="${searchType == 'writer'}">작성자</option>
+            </select>
+            <input type="text" id="searchQuery" name="query" th:value="${query}" placeholder="검색">
+            <input type="hidden" name="page" value="0"> <!-- 검색 시 첫 페이지로 이동 -->
+            <input type="hidden" name="size" value="10">
+            <button type="submit">검색</button>
+        </form>
     </div>
 </div>
 
@@ -198,7 +225,7 @@
     </div>
 </div>
 
-<!-- 게시글 목록 컨테이너 -->
+<!-- 게시글 목록 -->
 <div class="container">
     <div class="table-wrapper">
         <table>
@@ -212,11 +239,9 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="post, iterStat : ${posts}">
-                <td th:text="${iterStat.index + 1}"></td>
-                <td>
-                    <a th:href="@{/board/{id}(id=${post.id})}" th:text="${post.title}"></a>
-                </td>
+            <tr th:each="post, iterStat : ${boardPage.content}">
+                <td th:text="${(boardPage.number * boardPage.size) + iterStat.count}"></td>
+                <td><a th:href="@{/board/{id}(id=${post.id})}" th:text="${post.title}"></a></td>
                 <td th:text="${post.writer}"></td>
                 <td th:text="${post.createdDate}"></td>
                 <td th:text="${post.view}"></td>
@@ -224,30 +249,57 @@
             </tbody>
         </table>
     </div>
-</div>
 
-<!-- 글쓰기 버튼 -->
-<div class="write-btn-container container">
-    <div th:if="${session.loggedInUser != null}">
+    <!-- 글쓰기 버튼 -->
+    <div class="write-btn-container" th:if="${session.loggedInUser != null}">
         <form action="/board/writePage" method="get">
             <button class="write-btn" type="submit">글쓰기</button>
         </form>
     </div>
-    <div th:if="${session.loggedInUser == null}">
-        <button class="write-btn" type="button" onclick="alertAndRedirect()">글쓰기</button>
+
+    <!-- 페이징 -->
+    <div class="pagination">
+        <ul>
+            <!-- 첫 페이지 버튼 -->
+            <li th:if="${boardPage.number > 0}">
+                <a th:href="@{/board(page=0, size=${boardPage.size})}">« 처음</a>
+            </li>
+
+            <!-- 이전 페이지 -->
+            <li th:if="${boardPage.hasPrevious()}">
+                <a th:href="@{/board(page=${boardPage.number - 1}, size=${boardPage.size})}">« 이전</a>
+            </li>
+
+            <!-- 페이지 번호 -->
+            <li th:each="i : ${#numbers.sequence(0, boardPage.totalPages - 1)}">
+                <a th:href="@{/board(page=${i}, size=${boardPage.size})}"
+                   th:text="${i + 1}"
+                   th:classappend="${boardPage.number == i} ? 'active' : ''">
+                </a>
+            </li>
+
+            <!-- 다음 페이지 -->
+            <li th:if="${boardPage.hasNext()}">
+                <a th:href="@{/(page=${boardPage.number + 1}, size=${boardPage.size})}">다음 »</a>
+            </li>
+
+            <!-- 마지막 페이지 버튼 -->
+            <li th:if="${boardPage.number < boardPage.totalPages - 1}">
+                <a th:href="@{/(page=${boardPage.totalPages - 1}, size=${boardPage.size})}">마지막 »</a>
+            </li>
+        </ul>
     </div>
 </div>
 
 <script>
     function performSearch() {
-        var searchType = document.getElementById('searchType').value;
         var query = document.getElementById('searchQuery').value.trim();
-        if(query === '') {
-            alert("검색어를 입력해주세요.");
-            return;
-        }
-        window.location.href = '/board/search?searchType=' + encodeURIComponent(searchType) + '&query=' + encodeURIComponent(query);
+        if (query !== '') window.location.href = '/board/search?query=' + encodeURIComponent(query);
+    }
+    function handleEnter(event) {
+        if (event.key === 'Enter') performSearch();
     }
 </script>
+
 </body>
 </html>
